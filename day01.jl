@@ -14,7 +14,7 @@ end
 
 using Plots
 
-function overlay_graph()
+function overlay_chart()
     depths = data()
     diff1 = diff(depths)
     diff3 = diff([sum(depths[i:i+2]) for i in 1:length(depths)-2])
@@ -30,6 +30,17 @@ function overlay_graph()
         frame(anim)
     end
     gif(anim, "day01_anim.gif", fps = 15)
+end
+
+function scatter_chart()
+    depths = data()
+    diff1 = diff(depths)
+    diff3 = diff([sum(depths[i:i+2]) for i in 1:length(depths)-2])
+    scatter(diff1, diff3,
+        title = "Advent of Code - Day 1",
+        xlabel = "diffs(1)",
+        ylabel = "diffs(3)",
+        legend = false)
 end
 
 # This solution uses the fact that the sliding window comparison is
