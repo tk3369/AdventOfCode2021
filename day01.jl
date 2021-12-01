@@ -36,8 +36,13 @@ end
 # really just comparing the first and the 4th element:
 #     a1 + a2 + a3 < a2 + a3 + a4?
 # which is equivalent to answering a1 < a4
-function part2_jling(depths)
+function part2_jling(depths)  # 169ns
     count(3:lastindex(depths)-1) do idx
-        depths[idx-2] < depths[idx+1]
+        @inbounds depths[idx-2] < depths[idx+1]
     end
+end
+
+function part2_revised(depths) # 169ns
+    return count(@inbounds depths[i] < depths[i+3] 
+        for i in 1:lastindex(depths)-3)
 end
