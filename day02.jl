@@ -103,3 +103,26 @@ function drive(input)
     return result
 end
 
+using Luxor
+
+function make_frame(scene::Scene, frame_number::Integer, path, max_pos, max_depth, screen_width, screen_height)
+    state = path[frame_number*4]
+    x = state.pos * screen_width ÷ max_pos - screen_width ÷ 2
+    y = state.depth * screen_height ÷ max_depth - screen_height ÷ 2
+    background("black")
+    sethue("red")
+    circle(Point(x, y), 25, :fill)
+    @info "Made circle: $x, $y"
+end
+
+function make_movie()
+    screen_width = 500
+    screen_height = 500
+    movie = Movie(screen_width, screen_height, "day02")
+    path = drive(read_data())
+    max_depth = maximum(x.depth for x in path)
+    max_pos = maximum(x.pos for x in path)
+    frame(scene::Scene, frame_number::Integer) = make_frame(scene, frame_number, path,
+        max_pos, max_depth, screen_width, screen_height)
+    animate(movie, [Scene(movie, frame, 1:250)], creategif = true, pathname = "day02.gif")
+end
