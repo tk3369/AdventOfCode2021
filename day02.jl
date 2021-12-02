@@ -41,6 +41,23 @@ function part2(input)
     return pos * depth 
 end
 
+# Using pattern matching
+
+using Match
+
+function part2_match(input)
+    pos = depth = aim = 0
+    for (cmd, x) in input
+        @match cmd begin
+            :forward => (pos += x; depth += aim * x)
+            :up => (aim -= x)
+            :down => (aim += x)
+            _ => error("bad command: $cmd $x")
+        end
+    end
+    return pos * depth 
+end
+
 # Using custom dispatch
 
 mutable struct State
