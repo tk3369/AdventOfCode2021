@@ -38,7 +38,7 @@ function scatter_chart()
     diff3 = diff([sum(depths[i:i+2]) for i in 1:length(depths)-2])
     diff1 = diff1[1:end-2]
     colors = diff1 .- diff3
-    scatter(diff1, diff3,
+    plt = scatter(diff1, diff3,
         title = "Advent of Code - Day 1",
         xlabel = "diffs(1)",
         ylabel = "diffs(3)",
@@ -47,6 +47,7 @@ function scatter_chart()
         palette = :lightrainbow,
         alpha = 0.6,
         markerstrokewidth = 0)
+    savefig(plt, "day01_scatter.png")
 end
 
 # This solution uses the fact that the sliding window comparison is
@@ -59,7 +60,23 @@ function part2_jling(depths)  # 169ns
     end
 end
 
-function part2_revised(depths) # 169ns
-    return count(@inbounds depths[i] < depths[i+3] 
-        for i in 1:lastindex(depths)-3)
+# Revised solutions
+
+function part1_revised(depths)
+    count(>(0), diff(depths))
 end
+
+function part2_revised(depths)
+    count(depths[i] < depths[i+3] for i in 1:length(depths)-3)
+end
+
+# Fastest version
+
+function part2_fastest(depths)
+    count(@inbounds depths[i] < depths[i+3] for i in 1:length(depths)-3)
+end
+
+#=
+julia> @btime part2_fastest(depths)
+  181.203 ns (1 allocation: 16 bytes)
+=#
