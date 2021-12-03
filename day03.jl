@@ -30,9 +30,7 @@ function slice_by_bit(M, j, bit)
     return M[match_indices, :]
 end
 
-"""
-Go through the slice process until a single row is nailed.
-"""
+"Go through the slice process until a single row is nailed."
 function find_factor(M, algo::Function)
     pos = 1
     while true
@@ -41,7 +39,7 @@ function find_factor(M, algo::Function)
         size(M, 1) == 1 && break
         pos += 1
     end
-    return join("$x" for x in M)
+    return join(string(x) for x in M)
 end
 
 # ans: 2775870
