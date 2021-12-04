@@ -9,11 +9,15 @@ pub fn read_data() -> Vec<i32> {
         .collect();
 }
 
-// #[inline] used for criterion benchmark (see benches/benchmark.rs)
-#[inline]
-pub fn part1_windows(depths: &Vec<i32>) -> usize {
+pub fn part1(depths: &Vec<i32>) -> usize {
     return depths.windows(2)
         .filter(|x| x[0] < x[1])
+        .count();
+}
+
+pub fn part2(depths: &Vec<i32>) -> usize {
+    return depths.windows(4)
+        .filter(|x| x[0] < x[3])
         .count();
 }
 
