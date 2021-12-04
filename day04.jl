@@ -74,8 +74,8 @@ end
 
 @enum Rank FirstWinner LastWinner
 
-function play(file, ranking::Rank)
-    draws, boards = read_data(file)
+function play(ranking::Rank)
+    draws, boards = read_data("day04.txt")
     num_players = length(boards)
     states = make_states(num_players)
     players = trues(num_players)
@@ -95,5 +95,5 @@ function play(file, ranking::Rank)
     end
 end
 
-part1_revised() = play("day04.txt", FirstWinner)
-part2_revised() = play("day04.txt", LastWinner)
+part1_revised() = play(FirstWinner)
+part2_revised() = play(LastWinner)
