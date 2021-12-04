@@ -97,3 +97,70 @@ end
 
 part1_revised() = play(FirstWinner)
 part2_revised() = play(LastWinner)
+
+# Animation
+
+using Formatting
+
+# ANSI escape sequences
+# See https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+clear() = print("\e[2J")
+home() =  print("\e[H")
+show_cursor() = print("\e[?25h")
+hide_cursor() = print("\e[?25l")
+set_color(c) = print("\e[38;5;$(c)m")
+reset_color() = print("\e[38;5;255m")
+
+# Print the boards with marked numbers
+function print_boards(boards, states)
+    color_palette = [226, 196, 118]
+    gap = "   "
+    for row in 1:5
+        for (i, (board, state)) in enumerate(zip(boards, states))
+            for col in 1:5
+                board_color = color_palette[i]
+                state[row, col] == 1 && set_color(board_color)
+                printfmt("{:>3d}", board[row, col])
+                reset_color()
+            end
+            print(gap)
+        end
+        println()
+    end
+    println()
+end
+
+function animate_game()
+    hide_cursor()
+    clear()
+    home()
+    draws, boards = read_data("day04_sample.txt")
+    num_players = length(boards)
+    states = make_states(num_players)
+    winner = 0
+    print_boards(boards, states)
+    for val in draws
+        home()
+        sleep(0.5)
+        for (board, state) in zip(boards, states)
+            mark(board, state, val)
+        end
+        print_boards(boards, states)
+        for (i, state) in enumerate(states)
+            if won(state)
+                winner = i
+                break
+            end
+        end
+        winner > 0 && break
+    end
+    show_cursor()
+    println("Winner is board #$winner")
+end
+
+# How did I convert mov to animated gif?
+#   ffmpeg -i day04.mov -pix_fmt rgb24 -r 10 -vf tpad=stop_mode=clone:stop_duration=3 day04.gif
+#
+# References:
+#  https://superuser.com/questions/436056/how-can-i-get-ffmpeg-to-convert-a-mov-to-a-gif
+#  https://video.stackexchange.com/questions/10825/how-to-hold-the-last-frame-when-using-ffmpeg
