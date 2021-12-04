@@ -20,7 +20,7 @@ function overlay_chart()
     diff3 = diff([sum(depths[i:i+2]) for i in 1:length(depths)-2])
 
     anim = Animation()
-    plot(diff1, label = "diff1", color = :blue, alpha = 0.5, 
+    plot(diff1, label = "diff1", color = :blue, alpha = 0.5,
         title = "Advent of Code: Day 1", ylim = (-70, 70))
     frame(anim)
 
@@ -71,6 +71,10 @@ function part2_revised(depths)
 end
 
 # Fastest version
+
+function part1_fastest(depths)
+    count(@inbounds depths[i] < depths[i+1] for i in 1:length(depths)-1)
+end
 
 function part2_fastest(depths)
     count(@inbounds depths[i] < depths[i+3] for i in 1:length(depths)-3)

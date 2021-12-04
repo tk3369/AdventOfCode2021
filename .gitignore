@@ -1,1 +1,6 @@
 experimental
+
+# Rust
+**/debug/
+**/target/
+**/*.rs.bk
