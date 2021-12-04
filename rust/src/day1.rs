@@ -1,6 +1,6 @@
 // include_str!() embeds the content in the binary
 // whereas fs::read_to_string() would read data at run time
-const CONTENT: &str = include_str!("../day01.txt");
+const CONTENT: &str = include_str!("../input/day01.txt");
 
 pub fn read_data() -> Vec<i32> {
     return CONTENT
@@ -10,15 +10,11 @@ pub fn read_data() -> Vec<i32> {
 }
 
 pub fn part1(depths: &Vec<i32>) -> usize {
-    return depths.windows(2)
-        .filter(|x| x[0] < x[1])
-        .count();
+    return depths.windows(2).filter(|x| x[0] < x[1]).count();
 }
 
 pub fn part2(depths: &Vec<i32>) -> usize {
-    return depths.windows(4)
-        .filter(|x| x[0] < x[3])
-        .count();
+    return depths.windows(4).filter(|x| x[0] < x[3]).count();
 }
 
 // Notes:
