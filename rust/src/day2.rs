@@ -55,3 +55,21 @@ pub fn part2(commands: &Vec<Command>) -> i32 {
     }
     return pos * depth;
 }
+
+// Learning from other sample solutions:
+//
+// https://github.com/Crazytieguy/advent-2021/blob/master/src/bin/day2/main.rs
+// - use tagged union for `Command`
+// - defines `impl From<&str> for Command` for parsing from string
+// - use lines() instead of splitting by newline
+// - use collect_tuple() then destructure into multiple variables
+// - has unit test
+//
+// https://github.com/pk-nb/advent-of-code-2021/blob/main/day2/src/main.rs
+// - defines `impl std::str::FromStr for Direction` which returns `Result`
+//
+// https://github.com/timvisee/advent-of-code-2021/blob/master/day02a/src/main.rs
+// - very concise solution
+// - uses fold() to iterate and carry over state
+// - tuple matching! very cool!
+// - uses unreachable!() for unmatched case
