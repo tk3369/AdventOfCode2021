@@ -36,8 +36,7 @@ function sum_of_unmarked(board, state)
     sum(b for (b, s) in zip(board, state) if s == 0)
 end
 
-function part1()
-    draws, boards = read_data("day04.txt")
+function part1(draws, boards)
     states = make_states(length(boards))
     for val in draws
         for (board, state) in zip(boards, states)
@@ -51,8 +50,7 @@ function part1()
     end
 end
 
-function part2()
-    draws, boards = read_data("day04.txt")
+function part2(draws, boards)
     states = make_states(length(boards))
     winners = Set()
     for val in draws
@@ -70,12 +68,23 @@ function part2()
     end
 end
 
+# Benchmarking
+
+#=
+julia> draws, boards = read_data("day04.txt");
+
+julia> @btime part1($draws, $boards);
+  1.126 ms (19945 allocations: 904.41 KiB)
+
+julia> @btime part2($draws, $boards);
+  2.539 ms (41151 allocations: 1.89 MiB)
+=#
+
 # Revised after solving the puzzle
 
 @enum Rank FirstWinner LastWinner
 
-function play(ranking::Rank)
-    draws, boards = read_data("day04.txt")
+function play(draws, boards, ranking::Rank)
     num_players = length(boards)
     states = make_states(num_players)
     players = trues(num_players)
@@ -95,8 +104,8 @@ function play(ranking::Rank)
     end
 end
 
-part1_revised() = play(FirstWinner)
-part2_revised() = play(LastWinner)
+part1_revised(draws, boards) = play(draws, boards, FirstWinner)
+part2_revised(draws, boards) = play(draws, boards, LastWinner)
 
 # Animation
 
@@ -164,3 +173,35 @@ end
 # References:
 #  https://superuser.com/questions/436056/how-can-i-get-ffmpeg-to-convert-a-mov-to-a-gif
 #  https://video.stackexchange.com/questions/10825/how-to-hold-the-last-frame-when-using-ffmpeg
+
+
+# Inspring community solutions
+
+# JLing
+# 1. Splitting input by double newline
+# 2. Using mapreduce to parse the matrix from input (btw, transpose not needed for this problem)
+# 3. Comparing row/columns of 5's with eachrow/eachcol
+# 4. Turning numbers into -1 so they can be marked and ignored later (not a big fan but interesting nonetheless)
+#=
+Jling: I can't help but golfing, 17 lines solution to both parts:
+
+inputs = split(strip(read("./input4", String), '\n'), "\n\n")
+draws = parse.(Int, split(inputs[1], ","))
+boards = map(inputs[2:end]) do board
+    parse.(Int, mapreduce(split, hcat, split(board, "\n")))
+end
+p = fill(-1,5)
+wincon(m) = any(==(p), eachrow(m)) || any(==(p), eachcol(m))
+
+# part 1 & 2
+done = Set{Int}()
+res = Int[]
+for num in draws, (i, b) in enumerate(boards)
+    replace!(b, num => -1)
+    if i∉done && wincon(b)
+        push!(done, i)
+        push!(res, num * sum(filter(>(0), b)))
+    end
+end
+println(res[[begin, end]])
+=#
