@@ -8,7 +8,7 @@ dec(str) = parse(Int, str; base = 2)
 "What digit is most common at column `j`?"
 function most_common(M, j)
     rows = size(M, 1)
-    num_ones = sum(M[:, j]) 
+    num_ones = sum(M[:, j])
     num_zeros = rows - num_ones
     return num_ones >= num_zeros ? 1 : 0
 end
@@ -37,9 +37,12 @@ function find_factor(M, algo::Function)
         bit = algo(M, pos)
         M = slice_by_bit(M, pos, bit)
         size(M, 1) == 1 && break
+        @show pos bit size(M, 1)
         pos += 1
     end
-    return join(string(x) for x in M)
+    @show pos
+    @show result = join(string(x) for x in M)
+    return result
 end
 
 # ans: 2775870
@@ -50,3 +53,10 @@ function part2()
     return dec(oxygen) * dec(co2)
 end
 
+# result = join((string(x) for x = M)) = "111110110111"
+# result = join((string(x) for x = M)) = "001010110010"
+# julia> dec("111110110111")
+# 4023
+
+# julia> dec("001010110010")
+# 690
