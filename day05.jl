@@ -1,3 +1,5 @@
+using OffsetArrays
+
 """
 Read data and return array of lines. Each line is in this format.
 [(x = 645, y = 570), (x = 517, y = 570)]
@@ -36,16 +38,16 @@ end
 
 function run(input, filter_fn)
     lines = filter(filter_fn, input)
-    max_x = maximum(max(a.x, b.x) for (a,b) in data)
-    max_y = maximum(max(a.y, b.y) for (a,b) in data)
-    M = zeros(Int, max_y + 1, max_x + 1)  # zero based coordinates
+    max_x = maximum(max(a.x, b.x) for (a,b) in lines)
+    max_y = maximum(max(a.y, b.y) for (a,b) in lines)
+    # Use zero-based index easily!
+    board = OffsetArray(zeros(Int, max_y + 1, max_x + 1), 0:max_y, 0:max_x)
     for (a, b) in lines
-        xr, yr = ranges(a, b)
-        for (x,y) in zip(collect(xr), collect(yr))
-            M[y+1, x+1] += 1
+        for (x,y) in zip(ranges(a, b)...)
+            board[y, x] += 1
         end
     end
-    return count(>(1), M)
+    return count(>(1), board)
 end
 
 #=
