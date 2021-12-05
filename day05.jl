@@ -16,16 +16,16 @@ function parse_coordinates(coord)
 end
 
 "Returns true if the line is either horizontal or vertical"
-is_hv(line) =
-    let (a, b) = line
-        a.x == b.x || a.y == b.y
-    end
+function is_hv(line)
+    a, b = line
+    return a.x == b.x || a.y == b.y
+end
 
 "Returns true if the line is diagonal"
-is_diag(line) =
-    let (a, b) = line
-        abs(a.x - b.x) == abs(a.y - b.y)
-    end
+function is_diag(line)
+    a, b = line
+    return abs(a.x - b.x) == abs(a.y - b.y)
+end
 
 "Include the line only if it is horizontal, vertical, or diagonal at 45 degrees"
 is_valid(line) = is_hv(line) || is_diag(line)
