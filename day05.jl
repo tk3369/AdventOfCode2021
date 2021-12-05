@@ -72,7 +72,7 @@ function chart1()
     max_y = maximum(max(a.y, b.y) for (a, b) in lines)
     board = OffsetArray(zeros(Int, max_y + 1, max_x + 1), 0:max_y, 0:max_x)
     p = plot(; title = "Advent of Code 2021 - Day 5",
-        legend = false, size = (600, 600))
+        legend = false, size = (500, 500))
     for (a, b) in lines
         p = plot!([a, b]; background = :black, foreground = :green,
             guidefontsize = 20, linewidth = 5, alpha = 0.2,
@@ -95,7 +95,7 @@ function chart2()
     end
     p = heatmap(board;
         title = "Advent of Code 2021 - Day 5",
-        color = :thermal, legend = false, size = (600, 600),
+        color = :thermal, legend = false, size = (500, 500),
         background = :black, foreground = :green)
     savefig("day05_heatmap.png")
     return p
@@ -111,7 +111,7 @@ function chart3()
     anim = Animation()
     plot(;
         title = "Advent of Code 2021 - Day 5",
-        legend = false, size = (600, 600),
+        legend = false, size = (500, 500),
         background = :black, foreground = :green)
     frame(anim)
     for (i, (a, b)) in enumerate(lines)
