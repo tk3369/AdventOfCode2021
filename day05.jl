@@ -59,3 +59,68 @@ data = read_data("day05.txt")
 run(data, is_hv)         # 4421
 run(data, is_valid)      # 18674
 =#
+
+# Animation
+using Plots
+
+function chart1()
+    input = read_data("day05.txt")
+    lines = filter(is_valid, input)
+    max_x = maximum(max(a.x, b.x) for (a,b) in lines)
+    max_y = maximum(max(a.y, b.y) for (a,b) in lines)
+    board = OffsetArray(zeros(Int, max_y + 1, max_x + 1), 0:max_y, 0:max_x)
+    p = plot(; title = "Advent of Code 2021 - Day 5", legend = false,
+        size = (600, 600))
+    for (a, b) in lines
+        p = plot!([a, b]; background=:black, foreground=:green,
+            guidefontsize=20, linewidth=5, alpha=0.2,
+            legend = false)
+    end
+    savefig("day05_lines.png")
+    return p
+end
+
+function chart2()
+    input = read_data("day05.txt")
+    lines = filter(is_valid, input)
+    max_x = maximum(max(a.x, b.x) for (a,b) in lines)
+    max_y = maximum(max(a.y, b.y) for (a,b) in lines)
+    board = zeros(Int, max_y + 1, max_x + 1)
+    for (a, b) in lines
+        for (x,y) in zip(ranges(a, b)...)
+            board[y, x] += 1
+        end
+    end
+    p = heatmap(board;
+        title = "Advent of Code 2021 - Day 5",
+        color = :thermal, legend = false, size = (600, 600),
+        background=:black, foreground=:green)
+    savefig("day05_heatmap.png")
+    return p
+end
+
+
+function chart3()
+    input = read_data("day05.txt")
+    lines = filter(is_valid, input)
+    max_x = maximum(max(a.x, b.x) for (a,b) in lines)
+    max_y = maximum(max(a.y, b.y) for (a,b) in lines)
+    board = zeros(Int, max_y + 1, max_x + 1)
+    anim = Animation()
+    plot(;
+        title = "Advent of Code 2021 - Day 5",
+        legend = false, size = (600, 600),
+        background=:black, foreground=:green);
+    frame(anim)
+    for (i, (a, b)) in enumerate(lines)
+        for (x,y) in zip(ranges(a, b)...)
+            board[y, x] += 1
+        end
+        if i % 100 == 0
+            heatmap!(board; color = :thermal)
+            frame(anim)
+            @info "Created frame $i"
+        end
+    end
+    gif(anim, "day05_anim.png"; fps = 5)
+end
