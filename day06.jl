@@ -31,7 +31,7 @@ part2(fishes, days) = sum(family(fish, 1, days) for fish in fishes)
 Calculate the days when new fishes are spawn in `n` days given the
 fish has life of `x` days on day `d-1`.
 """
-@inline spawns(life, next_day, armageddon) = (life + next_day):7:armageddon
+spawns(life, next_day, armageddon) = (life + next_day):7:armageddon
 
 """
     family(life, next_day, armageddon, M)
