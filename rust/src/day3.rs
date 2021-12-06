@@ -80,3 +80,51 @@ pub fn part2(input: &Vec<&'static str>) -> i32 {
     let co2 = to_bit_vec(find_factor(input, false));
     return decimal(oxygen) * decimal(co2);
 }
+
+// Adapting from https://github.com/timvisee/advent-of-code-2021/blob/master/day03b/src/main.rs
+
+const WIDTH: usize = 5;
+
+pub fn part2_tim() {
+    let nums = include_str!("../input/day03_sample.txt")
+        .lines()
+        .map(|l| u32::from_str_radix(l, 2).unwrap())
+        .collect::<Vec<_>>();
+
+    let oxy = (0..WIDTH)
+        .rev()
+        .scan(nums.clone(), |oxy, i| {
+            let one = oxy.iter().filter(|n| *n & 1 << i > 0).count() >= (oxy.len() + 1) / 2;
+            // oxy.drain_filter(|n| (*n & 1 << i > 0) != one);
+            drain_filter(oxy, |n: u32| (n & 1 << i > 0) != one);
+            Some(*oxy)
+            // dbg!(oxy).first().copied()
+        })
+        .last()
+        .unwrap();
+
+    let co2 = (0..WIDTH)
+        .rev()
+        .scan(nums, |co2, i| {
+            let one = co2.iter().filter(|n| *n & 1 << i > 0).count() >= (co2.len() + 1) / 2;
+            drain_filter(co2, |n| (n & 1 << i > 0) == one);
+            co2.first().copied()
+        })
+        .last()
+        .unwrap();
+
+    println!("{}", oxy * co2);
+}
+
+// My own iterative version of drain_filter
+fn drain_filter<F: Fn(u32)->bool>(v: &mut Vec<u32>, pred: F) {
+    let mut pos = 0;
+    loop {
+        if pred(v[pos]) {
+            v.swap_remove(pos);
+        } else {
+            pos += 1;
+        }
+        if pos >= v.len() { break; }
+    }
+}

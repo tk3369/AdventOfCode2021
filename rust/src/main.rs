@@ -27,6 +27,9 @@ fn main() {
             println!("Part1 = {}", day3::part1(&input));
             println!("Part2 = {}", day3::part2(&input));
         },
+        "play" => {
+            day3::part2_tim();
+        }
         _ => {
             println!("Unknown day: {}", day);
         }
