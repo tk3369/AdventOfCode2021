@@ -20,8 +20,8 @@ end
 
 # Notes for Part2.
 # I spent a lot of time in part2 to formulate the problem into a recursive
-# algorithm and debuging. After the algorith was good, it was too slow and
-# I ended up adding a matrix to remember results.
+# algorithm and debuging. After the algorithm was good, it was too slow and
+# I ended up adding a matrix to memoize previous results.
 
 part2(fishes, days) = sum(family(fish, 1, days) for fish in fishes)
 
