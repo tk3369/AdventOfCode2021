@@ -26,7 +26,7 @@ fn fuel_required(target: i32, pos: &Vec<i32>, costy: fn(i32,i32)->i32) -> i32 {
 }
 
 // Calculate minimum fuel required to move all crabs to some position
-pub fn minimum_fuel(pos: &Vec<i32>, costy: fn(i32,i32)->i32) -> i32 {
+fn minimum_fuel(pos: &Vec<i32>, costy: fn(i32,i32)->i32) -> i32 {
     let n: i32 = *pos.iter().min().unwrap();
     let m: i32 = *pos.iter().max().unwrap();
     return (n..=m)
