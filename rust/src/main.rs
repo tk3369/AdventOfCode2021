@@ -2,6 +2,7 @@ use std::env;
 use aoc::day1;
 use aoc::day2;
 use aoc::day3;
+use aoc::day7;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +27,11 @@ fn main() {
             let input = day3::read_data();
             println!("Part1 = {}", day3::part1(&input));
             println!("Part2 = {}", day3::part2(&input));
+        },
+        "7"=> {
+            let input = day7::read_data();
+            println!("Part1 = {}", day7::part1(&input));
+            println!("Part2 = {}", day7::part2(&input));
         },
         "play" => {
             day3::part2_tim();
