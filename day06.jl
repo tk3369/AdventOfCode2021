@@ -58,3 +58,74 @@ data = read_data("day06.txt")
 part1(data)
 part2(data)
 =#
+
+# Inspirations
+
+# JLing
+module JLing
+
+function run(input, days)
+    counts = zeros(Int, 10)
+    @. counts[input+2] += 1
+    for _ = 1:days
+        counts = circshift(counts, -1)
+        N_mature = first(counts)
+        counts[end] = N_mature
+        counts[6+2] += N_mature
+    end
+    sum(counts[2:end])
+end
+
+end #module
+
+module Kirill
+const m1 = [0 1 0 0 0 0 0 0 0
+            0 0 1 0 0 0 0 0 0
+            0 0 0 1 0 0 0 0 0
+            0 0 0 0 1 0 0 0 0
+            0 0 0 0 0 1 0 0 0
+            0 0 0 0 0 0 1 0 0
+            1 0 0 0 0 0 0 1 0
+            0 0 0 0 0 0 0 0 1
+            1 0 0 0 0 0 0 0 0]
+const m80 = m1 ^ 80
+const m256 = m1 ^ 256
+
+function solve1(input, m = m80)
+    v = zeros(Int, 9)
+    for g in input
+        v[g + 1] += 1
+    end
+    sum(m * v)
+end
+
+solve2(input) = solve1(input, m256)
+
+function run(input)
+    output1 = solve1(input)
+    output2 = solve2(input)
+    return output1, output2
+end
+
+end #module
+
+module Rolfe
+
+# 1.083 μs (1 allocation: 128 bytes)
+function run(initial_state, days)
+    counts = zeros(Int64, 9)
+    for counter in initial_state
+        counts[counter + 1] += 1
+    end
+    for _ in 1:days
+        num_new = counts[1]
+        for k = 1:8
+            counts[k] = counts[k+1]
+        end
+        counts[7] += num_new
+        counts[9] = num_new
+    end
+    return reduce(+, counts)
+end
+
+end #module
