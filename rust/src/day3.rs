@@ -97,8 +97,7 @@ pub fn part2_tim() {
             let one = oxy.iter().filter(|n| *n & 1 << i > 0).count() >= (oxy.len() + 1) / 2;
             // oxy.drain_filter(|n| (*n & 1 << i > 0) != one);
             drain_filter(oxy, |n: u32| (n & 1 << i > 0) != one);
-            Some(*oxy)
-            // dbg!(oxy).first().copied()
+            oxy.first().copied()
         })
         .last()
         .unwrap();
