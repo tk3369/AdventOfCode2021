@@ -7,7 +7,7 @@ pub fn read_data() -> Vec<i32> {
         .collect();
 }
 
-// Every step equals the exactly 1 unit of fuel
+// Every step equals to exactly 1 unit of fuel
 fn constant_cost(x: i32, y:i32) -> i32 {
     return (x - y).abs();
 }
