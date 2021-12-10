@@ -91,3 +91,44 @@ function make_image()
     end
     gif(anim, "day09_anim.gif"; fps = 4)
 end
+
+# Inspirations
+
+# JLing - using CartesianIndex
+CI = CartesianIndex
+
+# Calculate neighbor's coordinates
+neighbors(coor) = [coor + c for c in (CI(0,1), CI(0,-1), CI(1,0), CI(-1,0))]
+
+# Iterative algorithm
+function walk(M, coor)
+    size = 0
+    todo = Set((coor, ))
+    done = Set{CI}()
+    while !isempty(todo)
+        size += 1
+        p = pop!(todo)
+        push!(done, p)
+        candidates = neighbors(p)
+        for s in candidates
+            s∉done && M[s]<9 && (push!(todo, s))
+        end
+    end
+    return size
+end
+
+# Jonathan Pallesen
+function part1_jonathan_pallesen()
+    read_matrix(data) = @pipe data .|> split(_, "") .|> parse.(Int, _) |> hcat(_...) |> permutedims
+
+    moves = CartesianIndex.([(1,0), (0,1), (-1, 0), (0, -1)])
+
+    # filter(in(board), _) comes back with valid coodinates, hence no padding needed
+    adjacent(p, board) = @pipe moves .|> p + _ |> filter(in(board), _)
+    smaller_than_neighbours(p, M, board) = all(adj -> M[adj] > M[p], adjacent(p, board))
+    minimum_points(M, board) = filter(p -> smaller_than_neighbours(p, M, board), board)
+
+    M = read_matrix(data)
+    board = CartesianIndices(M)
+    sum(p -> M[p] + 1, minimum_points(M, board))
+end
