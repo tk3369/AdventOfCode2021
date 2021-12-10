@@ -23,7 +23,6 @@ function analyze(s, stack = "")
     end
 end
 
-# ans: 215229
 part1(data) = sum(r[1] for r in analyze.(data))
 
 function score(stack)
