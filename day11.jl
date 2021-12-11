@@ -5,12 +5,6 @@ function read_data(filename)
     transpose(parse.(Int, reduce(hcat, split.(readlines(filename), ""))))
 end
 
-function with_padding(M, b)
-    N = fill(b, (size(M) .+ 2)...)
-    N[2:end-1, 2:end-1] = M
-    return N
-end
-
 function up!(octopuses, board, c)
     if c ∈ board && octopuses[c] < 10
         octopuses[c] += 1
