@@ -17,13 +17,11 @@ function up!(octopuses, board, c)
     end
 end
 
-# Run program with
-function main(data; steps = 100, part = 1, callback = nothing)
-    octopuses = with_padding(data, -1)
-    rows, cols = size(data)
-    board = CI(2,2):CI(cols+1,cols+1)
+# Run program
+function main(octopuses; steps = 100, part = 1, callback = (x,i)->nothing)
+    octopuses = copy(octopuses)  # no side effect
+    board = CartesianIndices(data)
     around = [CI(-1,-1), CI(0,-1), CI(1,-1), CI(-1,0), CI(1,0), CI(-1,1), CI(0,1), CI(1,1)]
-
     flashes = 0
     for i in 1:steps
         octopuses[board] .+= 1
@@ -85,6 +83,7 @@ julia> main(data, steps = 10000, part = 2)
 using Plots
 using Luxor
 
+# heatmap version
 function make_animation()
     data = read_data("day11.txt")
     anim = Animation()
@@ -102,23 +101,7 @@ function make_animation()
     gif(anim, "day11_anim.gif", fps = 10)
 end
 
-
-function make_aquarium()
-    data = read_data("day11.txt")
-    Drawing(500, 500, "day11_octopus.png")
-    origin()
-    background("white")
-    img = readpng("octopus.png")
-    gsave()
-    scale(0.05, 0.05)
-    w = img.width
-    h = img.height
-    placeimage(img, Point(-w/2, -h/2), 1.0)
-    grestore()
-    finish()
-    preview()
-end
-
+# Text version
 using Formatting
 
 # ANSI escape sequences
