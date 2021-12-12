@@ -43,16 +43,6 @@ function part2(data)
    return Int(median(sort(score.(last.(filter(x -> first(x) == 0, analyze.(data)))))))
 end
 
-#=
-sample_data = read_data("day10_sample.txt")
-part1(sample_data)
-part2(sample_data)
-
-data = read_data("day10.txt")
-part1(data)
-part2(data)
-=#
-
 # Inspirations
 
 function score_using_fold(stack)

@@ -8,10 +8,10 @@ function read_data(filename)
     return M
 end
 
-# Find low point but checking if the location's height is less than
+# Find low point by checking if the location's height is less than
 # all of its neighbors.
 # ans: 577
-function part1(M)
+function count_lowest_locations(M)
     result = 0
     rows, cols = size(M)
     for i in 2:rows-1, j in 2:cols-1
@@ -40,7 +40,7 @@ end
 
 # Flood entire region and start with every cell.
 # Note: this can be done more efficiently if we keep a map of processed cells.
-function part2(M)
+function flood_basins!(M)
     id = -1
     rows, cols = size(M)
     for i in 2:rows-1, j in 2:cols-1
@@ -56,12 +56,12 @@ end
 
 #=
 sample_data = read_data("day09_sample.txt")
-part1(sample_data)
-part2(sample_data)
+count_lowest_locations(sample_data)
+flood_basins!(sample_data)
 
 data = read_data("day09.txt")
-part1(data)
-part2(data)
+count_lowest_locations(data)
+flood_basins!(data)
 =#
 
 using Plots
@@ -118,7 +118,9 @@ function walk(M, coor)
 end
 
 # Jonathan Pallesen
-function part1_jonathan_pallesen()
+using Pipe
+
+function find_lowest_locations_jonathan_pallesen()
     read_matrix(data) = @pipe data .|> split(_, "") .|> parse.(Int, _) |> hcat(_...) |> permutedims
 
     moves = CartesianIndex.([(1,0), (0,1), (-1, 0), (0, -1)])
