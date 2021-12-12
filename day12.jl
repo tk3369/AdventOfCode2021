@@ -15,33 +15,29 @@ end
 is_large(s) = all(isuppercase.(collect(s)))
 is_small(s) = !is_large(s)
 
-function paths(edges::Dict, node::String = "start", visited = Dict{String,Int}(), path = String[], level = 1; found = [])
+function paths(edges::Dict, node::String = "start", visited = Set{String}(), path = String[], level = 1, twice = false; found = [])
+    # sleep(0.1)
     indent = "  " ^ level
     next_candidates = edges[node]
 
-    @info "$indent called: $node visited=$visited next_candidates=$next_candidates path=$path"
+    # @info "$indent called: $node visited=$visited next_candidates=$next_candidates path=$path twice=$twice"
 
-    # add back visited caves as long as the existing visited count == 1
-    next_caves = setdiff(next_candidates, keys(visited))
-    skipped_caves = intersect(keys(visited), next_candidates)
-    for cave in skipped_caves
-        if is_small(cave) && cave != "start" && cave != "end" && visited[cave] == 1
-            push!(next_caves, cave)
-            visited[cave] = 2
-            break
-        end
+    next_caves = [(c, false) for c in setdiff(next_candidates, visited)]
+    if !twice  # only add skipped caves if there wasn't any repeats before
+        skipped_caves = [(c, is_small(c) ? true : false) for c in intersect(visited, next_candidates)]
+        union!(next_caves, skipped_caves)
     end
-    @info "$indent next_caves: $next_caves visited=$visited"
+    # @info "$indent next_caves: $next_caves visited=$visited"
 
-    if is_small(node) && get(visited, node, 0) == 0
-        visited[node] = 1
+    if is_small(node)
+        push!(visited, node)
     end
 
     push!(path, node)
 
     if node == "end"
         full_path = join(path, ",")
-        @info "$indent Found path: $full_path"
+        # @info "$indent Found path: $full_path"
         push!(found, full_path)
         pop!(path)
         return 1
@@ -54,10 +50,10 @@ function paths(edges::Dict, node::String = "start", visited = Dict{String,Int}()
     else
         # sleep(0.2)
         total = 0
-        for c in next_caves
+        for (c, flag) in next_caves
             visited_copy = copy(visited)
             path_copy = copy(path)
-            total += paths(edges, c, visited_copy, path_copy, level+1; found)
+            total += paths(edges, c, visited_copy, path_copy, level+1, twice || flag; found)
             # @info "$indent Cave stat: $c visited_copy=$visited_copy path_copy=$path_copy"
         end
         return total
