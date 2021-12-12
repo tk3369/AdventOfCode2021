@@ -15,19 +15,33 @@ end
 is_large(s) = all(isuppercase.(collect(s)))
 is_small(s) = !is_large(s)
 
-function paths(edges::Dict, node::String = "start", visited = Set{String}(), path = String[], level = 1; found = [])
+function paths(edges::Dict, node::String = "start", visited = Dict{String,Int}(), path = String[], level = 1; found = [])
     indent = "  " ^ level
     next_candidates = edges[node]
-    next_caves = setdiff(next_candidates, visited)
 
-    # @info "$indent called: $node visited=$visited next_candidates=$next_candidates path=$path"
+    @info "$indent called: $node visited=$visited next_candidates=$next_candidates path=$path"
 
-    is_small(node) && push!(visited, node)
+    # add back visited caves as long as the existing visited count == 1
+    next_caves = setdiff(next_candidates, keys(visited))
+    skipped_caves = intersect(keys(visited), next_candidates)
+    for cave in skipped_caves
+        if is_small(cave) && cave != "start" && cave != "end" && visited[cave] == 1
+            push!(next_caves, cave)
+            visited[cave] = 2
+            break
+        end
+    end
+    @info "$indent next_caves: $next_caves visited=$visited"
+
+    if is_small(node) && get(visited, node, 0) == 0
+        visited[node] = 1
+    end
+
     push!(path, node)
 
     if node == "end"
         full_path = join(path, ",")
-        # @info "$indent Found path: $full_path"
+        @info "$indent Found path: $full_path"
         push!(found, full_path)
         pop!(path)
         return 1
