@@ -10,66 +10,72 @@ function read_data(filename)
     return mappings
 end
 
-# Keep a Set to make sure that large cave does not get visited more than once
-# Use DFS
-is_large(s) = all(isuppercase.(collect(s)))
-is_small(s) = !is_large(s)
+is_small(s) = all(islowercase, collect(s))
 
-function paths(edges::Dict, node::String = "start", visited = Set{String}(), path = String[], level = 1, twice = false; found = [])
-    # sleep(0.1)
-    indent = "  " ^ level
+"""
+Calculate all distinct paths.
+
+# Arguments
+- `edges`: input data
+- `allowance`: if true, let one small cave to pass through twice (part 2)
+- `node`: current node in the walk
+- `visited`: track which caves have been visited before
+- `level`: DFS level (useful for debugging only)
+- `twice`: whether a small cave has been visited twice before
+- `found`: all found paths
+"""
+function calculate_paths(edges::Dict, allowance = false,
+    node::String = "start", visited = Set{String}(), path = String[], level = 1, twice = false, found = []
+)
     next_candidates = edges[node]
 
-    # @info "$indent called: $node visited=$visited next_candidates=$next_candidates path=$path twice=$twice"
-
+    # Next caves are the ones that I haven't visited before
     next_caves = [(c, false) for c in setdiff(next_candidates, visited)]
-    if !twice  # only add skipped caves if there wasn't any repeats before
+
+    # For part2, if we haven't seen a cave passed through twice yet, we can add back those skipped caves.
+    # Use a flag to remember the fact that it's been just added back to the list.
+    if allowance && !twice
         skipped_caves = [(c, is_small(c) ? true : false) for c in intersect(visited, next_candidates)]
         union!(next_caves, skipped_caves)
     end
-    # @info "$indent next_caves: $next_caves visited=$visited"
 
+    # Just need to push the current node to the visited list
     if is_small(node)
         push!(visited, node)
     end
 
+    # Keep track of the path
     push!(path, node)
 
+    # If I have just hit the end, great! Determine the path value and update `found`.
     if node == "end"
         full_path = join(path, ",")
-        # @info "$indent Found path: $full_path"
         push!(found, full_path)
-        pop!(path)
-        return 1
+        return (found, 1)
     end
 
     len = length(next_caves)
-    if len == 0 # dead end
-        # @info "$indent Dead end: node=$node path=$path"
-        return 0
+    if len == 0
+        # if there is no more cave, then we must have hit a dead end.
+        return (found, 0)
     else
-        # sleep(0.2)
+        # Use DFS to explore next set of caves.
         total = 0
         for (c, flag) in next_caves
+            # Before going down the stack, use a copy of mutable data
             visited_copy = copy(visited)
             path_copy = copy(path)
-            total += paths(edges, c, visited_copy, path_copy, level+1, twice || flag; found)
-            # @info "$indent Cave stat: $c visited_copy=$visited_copy path_copy=$path_copy"
+            # This is important - the `twice` variable needs to "propagate" down the stack.
+            twice_flag = twice || flag
+            _, cnt = calculate_paths(edges, allowance, c, visited_copy, path_copy, level+1, twice_flag, found)
+            total += cnt
         end
-        return total
+        return (found, total)
     end
 end
 
-function part2(data)
-end
-
-
 #=
-sample_data = read_data("day12_sample.txt")
-part1(sample_data)
-part2(sample_data)
-
 data = read_data("day12.txt")
-part1(data)
-part2(data)
+calculate_paths(data, false)[2]    # 3761
+calculate_paths(data, true)[2]     # 99138
 =#
