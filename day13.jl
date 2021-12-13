@@ -48,25 +48,33 @@ function find_code(cs)
     M, heatmap(M, size=(1000, 300), c=:lightrainbow)
 end
 
+#=
+data = read_data("day13.txt")
+p1 = play(data, 1)
+p2 = play(data, typemax(Int))
+M, plt = find_code(p2)
+=#
+
+
 function make_animation(M)
     rows, cols = size(M)
 
-    # random color from both end of spectrum
-    randcolor() = rand([0.0, 1.0])
+    # Create my own color scheme
+    cs = ColorScheme(vcat(
+        range(colorant"black", colorant"red", length=5),
+        range(colorant"red", colorant"green", length=5))
+    )
 
-    # prepare such that background=0.5, marked=0 or 1
-    M = [M[r,c] > 0 ? randcolor() : 0.5 for r in 1:rows, c in 1:cols]
+    # random color where 0.5 and 1.0 represent red and green respectively
+    randcolor() = rand([0.5, 1.0])
 
     # randomize red/green colors
-    randomize(M) = [M[r,c] != 0.5 ? randcolor() : 0.5 for r in 1:rows, c in 1:cols]
+    randomize(M) = [M[r,c] > 0 ? randcolor() : 0 for r in 1:rows, c in 1:cols]
 
-    # :diverging_gkr_60_10_c40_n256 has red and green on both ends
-    # of the spectrum and black in the middle. So it's perfect for
-    # this Christmas!
     options = (legend=false, showaxis=false, ticks = false,
-        background=:black, foreground=:white, c=:diverging_gkr_60_10_c40_n256,
-        title="AoC Day 13: Activation Code\n", size=(600, 175))
-
+        background=:black, foreground=:white, c=palette(cs),
+        title="AoC Day 13: Activation Code\n", size=(600, 175)
+    )
     anim = Animation()
     for i in 1:30
         heatmap(M; options...)
@@ -76,8 +84,3 @@ function make_animation(M)
     gif(anim, "day13_anim.gif"; fps = 5)
 end
 
-#=
-data = read_data("day13.txt")
-p1 = play(data, 1)
-p2 = play(data, typemax(Int))
-=#
