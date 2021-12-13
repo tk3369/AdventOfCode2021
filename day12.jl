@@ -79,3 +79,88 @@ data = read_data("day12.txt")
 calculate_paths(data, false)[2]    # 3761
 calculate_paths(data, true)[2]     # 99138
 =#
+
+# Inspirations
+
+# Clean and easy to understand DFS algorithm
+module Sukera
+
+function input(file)
+    nodes = Dict{String, Vector{String}}()
+    for line in eachline(file)
+        a,b = split(line, '-')
+        (a != "end" && b != "start") && push!(get!(() -> String[], nodes, a), b)
+        (b != "end" && a != "start") && push!(get!(() -> String[], nodes, b), a)
+    end
+    nodes
+end
+
+part_one(nodes) = dfs(nodes, ["start"], chooseNode1)
+part_two(nodes) = dfs(nodes, ["start"], chooseNode2)
+
+chooseNode1(n,path) = all(isuppercase,n) || !(n in path)
+function chooseNode2(n,path)
+    all(isuppercase,n) && return true
+    if n in path
+        for node in path
+            all(isuppercase, node) && continue
+            (count(==(node), path) == 2) && return false
+        end
+    end
+    return true
+end
+
+function dfs(nodes, path, filterfunc)
+    curNode = last(path)
+    curNode == "end" && return 1
+    neighbors = Iterators.filter(n -> filterfunc(n, path), nodes[curNode])
+    paths = 0
+    for n in neighbors
+        paths += dfs(nodes, push!(path, n), filterfunc)
+        pop!(path)
+    end
+    return paths
+end
+
+end #module
+
+
+# Solve part 1 & 2 at the same time
+module JakobNyboNissan
+
+function parse(io::IO)::Dict{String, Set{String}}
+    d = Dict{String, Set{String}}()
+    for line in eachline(io)
+        a, b = split(line, '-')
+        b == "start" || push!(get!(valtype(d), d, a), b)
+        a == "start" || push!(get!(valtype(d), d, b), a)
+    end
+    d
+end
+
+solve(io::IO) = solve(parse(io))
+function solve(d::Dict)
+    stack = [(Set{String}(), false, "start")]
+    paths_extravisit = 0
+    paths_novisit = 0
+    while !isempty(stack)
+        hasbeen, small_visited, now = pop!(stack)
+        for i in d[now]
+            if i == "end"
+                paths_novisit += !small_visited
+                paths_extravisit += 1
+                continue
+            end
+            visitsmall = all(islowercase, i)
+            hasvisited = visitsmall && i ∈ hasbeen
+            if hasvisited && small_visited
+                continue
+            end
+            news = visitsmall ? push!(copy(hasbeen), i) : copy(hasbeen)
+            push!(stack, (news, small_visited || hasvisited, i))
+        end
+    end
+    return (paths_novisit, paths_extravisit)
+end
+
+end #module
