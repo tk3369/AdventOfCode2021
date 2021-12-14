@@ -7,37 +7,25 @@ function read_data(filename)
     prs(v) = parse(Int, v)
     coords = [(prs(x), prs(y)) for (x,y) in split.(split(coords, "\n"), ",")]
     mth(s) = let x = match(r"fold along (.)=(\d+)", s)
-        (axis = x.captures[1], pos = parse(Int, x.captures[2]))
+        (axis = x.captures[1], pos = prs(x.captures[2]))
     end
     folds = [mth(f) for f in split(folds, "\n")]
     return (; coords, folds)
 end
 
 function play(input, nfolds)
-    coords = input.coords
+    coords = copy(input.coords)
     for (i, f) in enumerate(input.folds)
-        paper = []
-        for c in coords
-            if f.axis == "y"  # fold up
-                if c[2] > f.pos
-                    delta = c[2] - f.pos
-                    push!(paper, (c[1], c[2] - 2 * delta))
-                else
-                    push!(paper, c)
-                end
-            else  # fold left
-                if c[1] > f.pos
-                    delta = c[1] - f.pos
-                    push!(paper, (c[1] - 2 * delta, c[2]))
-                else
-                    push!(paper, c)
-                end
-            end
+        if f.axis == "y"
+            updates = [(x, 2f.pos - y) for (x,y) in coords if y > f.pos]
+            coords = unique(vcat(updates, filter(c -> c[2] <= f.pos, coords)))
+        else
+            updates = [(2f.pos-x, y) for (x,y) in coords if x > f.pos]
+            coords = unique(vcat(updates, filter(c -> c[1] <= f.pos, coords)))
         end
-        coords = paper
         i >= nfolds && break
     end
-    return unique(coords)
+    return coords
 end
 
 function find_code(cs)
