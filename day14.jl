@@ -4,35 +4,9 @@ using StatsBase
 function read_data(filename)
     lines = readlines(filename)
     str = lines[1]
-    seed = unique_pairs(str)
+    seed = countmap(str[i:i+1] for i in 1:length(str)-1)
     rules = Dict(split(x, " -> ") for x in lines[3:end])
     return str, seed, rules
-end
-
-# old code
-function part1_step(seed, rules)
-    s = "$(seed[1])"
-    for i in 1:length(seed)-1
-        prev, next = seed[i], seed[i+1]
-        c = get(rules, (prev, next), nothing)
-        updated = c !== nothing ? c * next : next
-        s *= updated
-    end
-    s
-end
-
-function part1(seed, rules)
-    s = seed
-    for i in 1:10
-        s = step(s, rules)
-    end
-    e = extrema(values(countmap(collect(s))))
-    e[2] - e[1]
-end
-
-# debugging
-function unique_pairs(s)
-    countmap(s[i:i+1] for i in 1:length(s)-1)
 end
 
 function step!(dct, rules)
@@ -51,7 +25,8 @@ function step!(dct, rules)
     return dct
 end
 
-function part2(str, seed, rules, steps)
+function expand(str, seed, rules, steps)
+    seed = copy(seed)
     for s in 1:steps
         step!(seed, rules)
     end
@@ -66,3 +41,8 @@ function part2(str, seed, rules, steps)
     end
     return -(reverse(extrema(values(dct)))...)
 end
+
+#=
+str, seed, rules  = read_data("day14.txt")
+expand(str, seed, rules, 40)
+=#
