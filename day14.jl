@@ -1,4 +1,3 @@
-# using DataStructures
 using StatsBase
 
 function read_data(filename)
