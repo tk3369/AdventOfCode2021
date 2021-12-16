@@ -35,6 +35,12 @@ version = "0.4.1"
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
 
+[[deps.ArnoldiMethod]]
+deps = ["LinearAlgebra", "Random", "StaticArrays"]
+git-tree-sha1 = "62e51b39331de8911e4a7ff6f5aaf38a5f4cc0ae"
+uuid = "ec485272-7323-5ecc-a04f-4719b315124d"
+version = "0.2.0"
+
 [[deps.ArrayInterface]]
 deps = ["Compat", "IfElse", "LinearAlgebra", "Requires", "SparseArrays", "Static"]
 git-tree-sha1 = "265b06e2b1f6a216e0e8f183d28e4d354eab3220"
@@ -463,6 +469,12 @@ git-tree-sha1 = "58bcdf5ebc057b085e58d95c138725628dd7453c"
 uuid = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 version = "0.4.1"
 
+[[deps.GeometryTypes]]
+deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "StaticArrays"]
+git-tree-sha1 = "d796f7be0383b5416cd403420ce0af083b0f9b28"
+uuid = "4d00f742-c7ba-57c2-abde-4428a4b178cb"
+version = "0.8.5"
+
 [[deps.Gettext_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "XML2_jll"]
 git-tree-sha1 = "9b02998aba7bf074d14de89f9d37ca24a1a0b046"
@@ -480,6 +492,12 @@ git-tree-sha1 = "4df9f7e06108728ebf00a0a11edee4b29a482bb2"
 uuid = "c27321d9-0574-5035-807b-f59d2c89b15c"
 version = "1.3.0"
 
+[[deps.GraphRecipes]]
+deps = ["AbstractTrees", "GeometryTypes", "Graphs", "InteractiveUtils", "Interpolations", "LinearAlgebra", "NaNMath", "NetworkLayout", "PlotUtils", "RecipesBase", "SparseArrays", "Statistics"]
+git-tree-sha1 = "8bddeec95f8c824d246d53de0230e225027bd3d9"
+uuid = "bd48cda9-67a9-57be-86fa-5b3c104eda73"
+version = "0.5.8"
+
 [[deps.Graphics]]
 deps = ["Colors", "LinearAlgebra", "NaNMath"]
 git-tree-sha1 = "1c5a84319923bea76fa145d49e93aa4394c73fc2"
@@ -491,6 +509,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "344bf40dcab1073aca04aa0df4fb092f920e4011"
 uuid = "3b182d85-2403-5c21-9c21-1e1f0cc25472"
 version = "1.3.14+0"
+
+[[deps.Graphs]]
+deps = ["ArnoldiMethod", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]
+git-tree-sha1 = "92243c07e786ea3458532e199eb3feee0e7e08eb"
+uuid = "86223c79-3864-5bf0-83f7-82e725a168b6"
+version = "1.4.1"
 
 [[deps.GridLayoutBase]]
 deps = ["GeometryBasics", "InteractiveUtils", "Observables"]
@@ -1012,6 +1036,12 @@ deps = ["ColorVectorSpace", "FileIO", "ImageCore"]
 git-tree-sha1 = "09589171688f0039f13ebe0fdcc7288f50228b52"
 uuid = "f09324ee-3d7c-5217-9330-fc30815ba969"
 version = "1.0.1"
+
+[[deps.NetworkLayout]]
+deps = ["GeometryBasics", "LinearAlgebra", "Random", "Requires", "SparseArrays"]
+git-tree-sha1 = "24e10982e84dd35cd867102243454bf8a4581a76"
+uuid = "46757867-2c16-5918-afeb-47bfcb05e46a"
+version = "0.4.3"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
